@@ -4,9 +4,13 @@ fn main() {
     
     // windows includes
     if env.contains("windows") {
-        build.include("bx/include/compat/msvc");
-        build.include("bgfx/3rdparty/directx-headers/include/directx");
-        build.flag("/Zc:__cplusplus");
+        //build.include("bgfx/3rdparty/directx-headers/include/directx");
+        if env.contains("msvc") {
+            build.include("bx/include/compat/msvc");
+            build.flag("/Zc:__cplusplus");
+        } else {
+            build.flag("-std=c++14");
+        }
     } else if env.contains("darwin") {
         // macOS includes
         build.include("bx/include/compat/osx");
@@ -76,9 +80,10 @@ fn main() {
 
     if env.contains("windows") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
-        build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
-        build.define("BGFX_CONFIG_RENDERER_DIRECT3D12", "1");
+        //build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
+        //build.define("BGFX_CONFIG_RENDERER_DIRECT3D12", "1");
         build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
+        build.define("BX_CONFIG_CRT_DIRECTORY_READER", "0");
         build.define("_WIN32", None);
         build.define("_HAS_EXCEPTIONS", "0");
         build.define("_SCL_SECURE", "0");
@@ -88,6 +93,7 @@ fn main() {
         build.define("__STDC_CONSTANT_MACROS", None);
         build.define("_CRT_SECURE_NO_WARNINGS", None);
         build.define("_CRT_SECURE_NO_DEPRECATE", None);
+        build.define("_FILE_OFFSET_BITS", "64");
         build.warnings(false);
     } else if env.contains("darwin") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "0");
