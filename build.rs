@@ -153,7 +153,7 @@ fn main() {
     build.compile("bgfx_sys");
 
     // linker stuff
-    if env.contains("windows") {
+    if env.contains("windows") && env.contains("msvc") {
         // todo fixme
     } else if env.contains("darwin") {
         println!("cargo:rustc-link-lib=framework=Metal");
@@ -166,8 +166,15 @@ fn main() {
         println!("cargo:rustc-link-lib=EGL");
     } else {
         println!("cargo:rustc-link-lib=pthread");
-        println!("cargo:rustc-link-lib=stdc++");
-        println!("cargo:rustc-link-lib=GL");
-        println!("cargo:rustc-link-lib=X11");
+        if env.contains("windows") {
+            println!("cargo:rustc-link-lib=opengl32");
+            println!("cargo:rustc-link-lib=psapi");
+            println!("cargo:rustc-link-lib=gdi32");
+            println!("cargo:rustc-link-arg=-static-libgcc");
+            println!("cargo:rustc-link-arg=-static-libstdc++");
+        } else {
+            println!("cargo:rustc-link-lib=GL");
+            println!("cargo:rustc-link-lib=X11");
+        }
     }
 }
